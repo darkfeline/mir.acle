@@ -26,7 +26,8 @@ def start_command_line(handler, input_file=None, loop=None):
     """Start an asynchronous command line.
 
     handler is a coroutine which is called with each command line as a
-    string.
+    string read from input_file.  It may be a bytestring depending on
+    input_file.
 
     input_file is a file object to read commands from.  If missing, use
     stdin.
@@ -42,7 +43,7 @@ def start_command_line(handler, input_file=None, loop=None):
 
 
 async def _mainloop(loop, handler, input_file):
-    reader = await _async_reader(loop, input_file)
+    reader = await async_reader(loop, input_file)
     while True:
         line = await reader.readline()
         if not line:
@@ -50,7 +51,8 @@ async def _mainloop(loop, handler, input_file):
         await handler(line)
 
 
-async def _async_reader(loop, file):
+async def async_reader(loop, file):
+    """Create an asyncio StreamReader."""
     reader = asyncio.StreamReader()
     reader_protocol = asyncio.StreamReaderProtocol(reader)
     await loop.connect_read_pipe(lambda: reader_protocol, file)
