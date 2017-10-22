@@ -26,8 +26,8 @@ def start_command_line(handler, input_file=None, loop=None):
     """Start an asynchronous command line.
 
     handler is a coroutine which is called with each command line as a
-    string read from input_file.  It may be a bytestring depending on
-    input_file.
+    string or bytestring read from input_file.  If handler returns True
+    or input_file reaches EOF, the command line exits.
 
     input_file is a file object to read commands from.  If missing, use
     stdin.
@@ -48,7 +48,8 @@ async def _mainloop(loop, handler, input_file):
         line = await reader.readline()
         if not line:
             break
-        await handler(line)
+        if await handler(line):
+            break
 
 
 async def async_reader(loop, file):

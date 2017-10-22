@@ -45,3 +45,21 @@ def test_start_command_line(loop):
             loop=loop)
 
     assert out.getvalue() == b'Got foo\nGot bar\n'
+
+
+def test_start_command_line_exiting_early(loop):
+    out = io.BytesIO()
+
+    async def handler(line):
+        out.write(b'Got ')
+        out.write(line)
+        return True
+
+    with subprocess.Popen(['/bin/sh', '-c', 'echo foo; echo bar'],
+                          stdout=subprocess.PIPE) as p:
+        base.start_command_line(
+            handler=handler,
+            input_file=p.stdout,
+            loop=loop)
+
+    assert out.getvalue() == b'Got foo\n'
