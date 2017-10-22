@@ -1,20 +1,20 @@
-mir.protology README
-====================
+mir.acle README
+===============
 
-.. image:: https://circleci.com/gh/darkfeline/mir.protology.svg?style=shield
-   :target: https://circleci.com/gh/darkfeline/mir.protology
+.. image:: https://circleci.com/gh/darkfeline/mir.acle.svg?style=shield
+   :target: https://circleci.com/gh/darkfeline/mir.acle
    :alt: CircleCI
-.. image:: https://codecov.io/gh/darkfeline/mir.protology/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/darkfeline/mir.protology
+.. image:: https://codecov.io/gh/darkfeline/mir.acle/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/darkfeline/mir.acle
    :alt: Codecov
-.. image:: https://badge.fury.io/py/mir.protology.svg
-   :target: https://badge.fury.io/py/mir.protology
+.. image:: https://badge.fury.io/py/mir.acle.svg
+   :target: https://badge.fury.io/py/mir.acle
    :alt: PyPI Release
-.. image:: https://readthedocs.org/projects/mir-protology/badge/?version=latest
-   :target: http://mir-protology.readthedocs.io/en/latest/
+.. image:: https://readthedocs.org/projects/mir-acle/badge/?version=latest
+   :target: http://mir-acle.readthedocs.io/en/latest/
    :alt: Latest Documentation
 
-Template project for Python projects under the mir namespace.
+Asynchronous Command Line Environment.
 
 Before running any other make command, run::
 

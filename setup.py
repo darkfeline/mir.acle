@@ -27,12 +27,12 @@ def find_version(path):
 
 
 setup(
-    name='mir.protology',
-    version=find_version('mir/protology/__init__.py'),
+    name='mir.acle',
+    version=find_version('mir/acle/__init__.py'),
     description='Distribution template for the mir namespace',
     long_description='',
     keywords='',
-    url='https://github.com/darkfeline/mir.protology',
+    url='https://github.com/darkfeline/mir.acle',
     author='Allen Li',
     author_email='darkfeline@felesatra.moe',
     classifiers=[
@@ -43,6 +43,6 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
 
-    packages=['mir.protology'],
+    packages=['mir.acle'],
     install_requires=[],
 )
