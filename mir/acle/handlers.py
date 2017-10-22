@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import asyncio
 import logging
 import shlex
 
@@ -51,21 +52,46 @@ class ShellHandler(BaseHandler):
     """
 
     def __init__(self, tokenizer=None):
-        if tokenizer is None:
-            tokenizer = shlex.spit
+        if tokenizer is None:  # pragma: no cover
+            tokenizer = shlex.split
         self._tokenizer = tokenizer
         self._commands = dict()
 
+    def set_default_handler(self, handler):
+        """Set the default handler for unknown or empty commands.
+
+        handler should take one argument, a list of strings.
+        """
+        assert asyncio.iscoroutinefunction(handler)
+        self._default_handler = handler
+
     def add_command(self, command, handler):
+        """Add a handler for a command.
+
+        handler should take one argument, a list of strings.
+        """
+        assert asyncio.iscoroutinefunction(handler)
         self._commands[command] = handler
 
     async def _call(self, line: str):
         args = self._tokenizer(line)
-        if not args:
-            return
-        command = args[0]
-        try:
-            handler = self._commands[command]
-        except KeyError:
-            print(f'Unknown command {command}')
+        handler = self._get_handler(args)
         await handler(args)
+
+    def _get_handler(self, args):
+        if not args:
+            return self._default_handler
+        command = args[0]
+        return self._commands.get(command, self._default_handler)
+
+    async def _default_handler(self, args):
+        """Default handler for empty or unknown commands.
+
+        Prints an error message for unknown commands and does nothing
+        for empty commands.
+
+        This can be overridden on an instance by calling
+        set_default_handler().
+        """
+        if args:
+            print(f'Unknown command {args[0]}')

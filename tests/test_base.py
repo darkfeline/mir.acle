@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import io
 import subprocess
 from subprocess import PIPE
 
@@ -20,11 +19,10 @@ from mir.acle import base
 
 
 def test_start_command_line(loop):
-    out = io.BytesIO()
+    got = []
 
     async def handler(line):
-        out.write(b'Got ')
-        out.write(line)
+        got.append(line)
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
         base.start_command_line(
@@ -32,15 +30,14 @@ def test_start_command_line(loop):
             input_file=p.stdout,
             loop=loop)
 
-    assert out.getvalue() == b'Got foo\nGot bar\n'
+    assert got == [b'foo\n', b'bar\n']
 
 
 def test_start_command_line_exiting_early(loop):
-    out = io.BytesIO()
+    got = []
 
     async def handler(line):
-        out.write(b'Got ')
-        out.write(line)
+        got.append(line)
         return True
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
@@ -49,4 +46,4 @@ def test_start_command_line_exiting_early(loop):
             input_file=p.stdout,
             loop=loop)
 
-    assert out.getvalue() == b'Got foo\n'
+    assert got == [b'foo\n']
