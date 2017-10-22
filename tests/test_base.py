@@ -12,22 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio
 import io
 import subprocess
-
-import pytest
+from subprocess import PIPE
 
 from mir.acle import base
-
-
-@pytest.fixture
-def loop():
-    l = asyncio.new_event_loop()
-    try:
-        yield l
-    finally:
-        l.close()
 
 
 def test_start_command_line(loop):
@@ -37,8 +26,7 @@ def test_start_command_line(loop):
         out.write(b'Got ')
         out.write(line)
 
-    with subprocess.Popen(['/bin/sh', '-c', 'echo foo; echo bar'],
-                          stdout=subprocess.PIPE) as p:
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
         base.start_command_line(
             handler=handler,
             input_file=p.stdout,
@@ -55,8 +43,7 @@ def test_start_command_line_exiting_early(loop):
         out.write(line)
         return True
 
-    with subprocess.Popen(['/bin/sh', '-c', 'echo foo; echo bar'],
-                          stdout=subprocess.PIPE) as p:
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
         base.start_command_line(
             handler=handler,
             input_file=p.stdout,

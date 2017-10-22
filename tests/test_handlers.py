@@ -12,22 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import argparse
-import sys
+import subprocess
+from subprocess import PIPE
 
 from mir.acle import base
+from mir.acle import handlers
 
 
-def main(args):
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args(args)
-    base.start(_handle)
-    return 0
+def test_base_handler_exception(loop, capsys):
+    class Handler(handlers.BaseHandler):
+
+        async def _call(self, line: str):
+            raise _TestError
+
+    handler = Handler()
+
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
+        base.start_command_line(
+            handler=handler,
+            input_file=p.stdout,
+            loop=loop)
+
+    out, err = capsys.readouterr()
+    assert out == 'Uncaught exception in command line handler\n' * 2
 
 
-def _handle(line):
-    print(f'Got {line!r}')
-
-
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+class _TestError(Exception):
+    pass

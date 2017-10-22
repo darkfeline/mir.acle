@@ -30,7 +30,7 @@ def start_command_line(handler, input_file=None, loop=None):
     or input_file reaches EOF, the command line exits.
 
     input_file is a file object to read commands from.  If missing, use
-    stdin.
+    stdin.  input_file should be backed by a socket or pipe.
 
     loop is the asyncio event loop to use.  If missing, use
     asyncio.get_event_loop().
