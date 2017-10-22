@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Command line handlers
+
+This module implements command line handlers for mir.acle.base.
+"""
+
 import asyncio
 import logging
 import shlex
