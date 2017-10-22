@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""mir namespace template package"""
-
-__version__ = '0.1.0'
+from mir import acle
 
 
-def quack():
-    """Quack like a duck."""
-    return 'quack'
+def test_quack():
+    assert acle.quack() == 'quack'

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir import protology
+"""Asynchronous Command Line Environment"""
 
-
-def test_quack():
-    assert protology.quack() == 'quack'
+__version__ = '0.1.0'
