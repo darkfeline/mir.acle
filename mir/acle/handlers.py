@@ -32,7 +32,7 @@ class BaseHandler:
 
     async def __call__(self, line: bytes):
         try:
-            await self._call(line.decode())
+            return await self._call(line.decode())
         except Exception:
             logger.exception('Uncaught exception in command line handler')
             print('Uncaught exception in command line handler')
@@ -76,7 +76,7 @@ class ShellHandler(BaseHandler):
     async def _call(self, line: str):
         args = self._tokenizer(line)
         handler = self._get_handler(args)
-        await handler(args)
+        return await handler(args)
 
     def _get_handler(self, args):
         if not args:
