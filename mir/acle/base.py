@@ -35,9 +35,9 @@ def start_command_line(handler, input_file=None, loop=None):
     loop is the asyncio event loop to use.  If missing, use
     asyncio.get_event_loop().
     """
-    if input_file is None:
+    if input_file is None:  # pragma: no cover
         input_file = sys.stdin
-    if loop is None:
+    if loop is None:  # pragma: no cover
         loop = asyncio.get_event_loop()
     loop.run_until_complete(_mainloop(loop, handler, input_file))
 
