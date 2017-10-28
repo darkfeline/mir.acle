@@ -17,7 +17,6 @@
 This module implements command line handlers for mir.acle.base.
 """
 
-import asyncio
 import logging
 import shlex
 
