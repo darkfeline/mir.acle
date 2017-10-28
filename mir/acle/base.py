@@ -22,12 +22,16 @@ import asyncio
 import sys
 
 
-def start_command_line(handler, input_file=None, loop=None):
+def start_command_line(handler, *, pre_hook=lambda: None,
+                       input_file=None, loop=None):
     """Start an asynchronous command line.
 
-    handler is a coroutine which is called with each command line as a
-    string or bytestring read from input_file.  If handler returns True
-    or input_file reaches EOF, the command line exits.
+    handler is a coroutine function which is called with each command
+    line as a string or bytestring read from input_file.  If handler
+    returns True or input_file reaches EOF, the command line exits.
+
+    pre_hook is a function that is called before each command line is
+    read.
 
     input_file is a file object to read commands from.  If missing, use
     stdin.  input_file should be backed by a socket or pipe.
@@ -39,12 +43,13 @@ def start_command_line(handler, input_file=None, loop=None):
         input_file = sys.stdin
     if loop is None:  # pragma: no cover
         loop = asyncio.get_event_loop()
-    loop.run_until_complete(_mainloop(loop, handler, input_file))
+    loop.run_until_complete(_mainloop(loop, handler, pre_hook, input_file))
 
 
-async def _mainloop(loop, handler, input_file):
+async def _mainloop(loop, handler, pre_hook, input_file):
     reader = await async_reader(loop, input_file)
     while True:
+        pre_hook()
         line = await reader.readline()
         if not line:
             break

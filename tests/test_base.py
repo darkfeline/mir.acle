@@ -47,3 +47,22 @@ def test_start_command_line_exiting_early(loop):
             loop=loop)
 
     assert got == [b'foo\n']
+
+
+def test_start_command_line_pre_hook(loop):
+    got = []
+
+    async def handler(line):
+        got.append(line)
+
+    def hook():
+        got.append(b'pre\n')
+
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
+        base.start_command_line(
+            handler=handler,
+            pre_hook=hook,
+            input_file=p.stdout,
+            loop=loop)
+
+    assert got == [b'pre\n', b'foo\n', b'pre\n', b'bar\n', b'pre\n']
