@@ -67,7 +67,6 @@ class ShellHandler(BaseHandler):
 
         handler should take one argument, a list of strings.
         """
-        assert asyncio.iscoroutinefunction(handler)
         self._default_handler = handler
 
     def add_command(self, command, handler):
@@ -75,7 +74,6 @@ class ShellHandler(BaseHandler):
 
         handler should take one argument, a list of strings.
         """
-        assert asyncio.iscoroutinefunction(handler)
         self._commands[command] = handler
 
     async def _call(self, line: str):
