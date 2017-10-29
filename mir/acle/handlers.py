@@ -76,17 +76,17 @@ class ShellHandler(BaseHandler):
         self._commands[command] = handler
 
     async def _call(self, line: str):
-        args = self._tokenizer(line)
-        handler = self._get_handler(args)
-        return await handler(args)
+        argv = self._tokenizer(line)
+        handler = self._get_handler(argv)
+        return await handler(argv)
 
-    def _get_handler(self, args):
-        if not args:
+    def _get_handler(self, argv):
+        if not argv:
             return self._default_handler
-        command = args[0]
+        command = argv[0]
         return self._commands.get(command, self._default_handler)
 
-    async def _default_handler(self, args):
+    async def _default_handler(self, argv):
         """Default handler for empty or unknown commands.
 
         Prints an error message for unknown commands and does nothing
@@ -95,5 +95,5 @@ class ShellHandler(BaseHandler):
         This can be overridden on an instance by calling
         set_default_handler().
         """
-        if args:
-            print(f'Unknown command {args[0]}')
+        if argv:
+            print(f'Unknown command {argv[0]}')
