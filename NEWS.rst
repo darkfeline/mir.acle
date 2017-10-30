@@ -3,6 +3,14 @@ mir.acle Release Notes
 
 This project uses `semantic versioning <http://semver.org/>`_.
 
+1.0.1 (2017-10-29)
+------------------
+
+Fixed
+^^^^^
+
+- Fixed bug when using default loop in `start_command_line`.
+
 1.0.0 (2017-10-29)
 ------------------
 

@@ -28,6 +28,8 @@ def start_command_line(handler, *, pre_hook=lambda: None,
 
     This is a convenience version of async_start_command_line.
     """
+    if loop is None:
+        loop = asyncio.get_event_loop()
     kwargs = dict(
         handler=handler,
         pre_hook=pre_hook,
@@ -35,8 +37,6 @@ def start_command_line(handler, *, pre_hook=lambda: None,
         loop=loop)
     if input_file is None:  # pragma: no cover
         del kwargs['input_file']
-    if loop is None:  # pragma: no cover
-        del kwargs['loop']
     loop.run_until_complete(async_start_command_line(**kwargs))
 
 

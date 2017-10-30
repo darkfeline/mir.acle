@@ -33,6 +33,20 @@ def test_start_command_line(loop):
     assert got == [b'foo\n', b'bar\n']
 
 
+def test_start_command_line_default_loop():
+    got = []
+
+    async def handler(line):
+        got.append(line)
+
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
+        base.start_command_line(
+            handler=handler,
+            input_file=p.stdout)
+
+    assert got == [b'foo\n', b'bar\n']
+
+
 def test_start_command_line_exiting_early(loop):
     got = []
 
