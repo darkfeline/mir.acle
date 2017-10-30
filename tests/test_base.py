@@ -66,3 +66,16 @@ def test_start_command_line_pre_hook(loop):
             loop=loop)
 
     assert got == [b'pre\n', b'foo\n', b'pre\n', b'bar\n', b'pre\n']
+
+
+def test_async_start_command_line(loop):
+    got = []
+
+    async def handler(line):
+        got.append(line)
+    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
+        loop.run_until_complete(base.async_start_command_line(
+            handler=handler,
+            input_file=p.stdout,
+            loop=loop))
+    assert got == [b'foo\n', b'bar\n']

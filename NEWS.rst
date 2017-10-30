@@ -3,6 +3,14 @@ mir.acle Release Notes
 
 This project uses `semantic versioning <http://semver.org/>`_.
 
+1.0.0 ()
+--------
+
+Added
+^^^^^
+
+- Added `async_start_command_line()`.
+
 0.3.0 (2017-10-28)
 ------------------
 

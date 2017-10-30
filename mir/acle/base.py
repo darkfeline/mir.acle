@@ -26,6 +26,24 @@ def start_command_line(handler, *, pre_hook=lambda: None,
                        input_file=None, loop=None):
     """Start an asynchronous command line.
 
+    This is a convenience version of async_start_command_line.
+    """
+    kwargs = dict(
+        handler=handler,
+        pre_hook=pre_hook,
+        input_file=input_file,
+        loop=loop)
+    if input_file is None:  # pragma: no cover
+        del kwargs['input_file']
+    if loop is None:  # pragma: no cover
+        del kwargs['loop']
+    loop.run_until_complete(async_start_command_line(**kwargs))
+
+
+async def async_start_command_line(handler, *, pre_hook=lambda: None,
+                                   input_file=None, loop=None):
+    """Start an asynchronous command line.
+
     handler is a coroutine function which is called with each command
     line as a string or bytestring read from input_file.  If handler
     returns True or input_file reaches EOF, the command line exits.
@@ -43,7 +61,7 @@ def start_command_line(handler, *, pre_hook=lambda: None,
         input_file = sys.stdin
     if loop is None:  # pragma: no cover
         loop = asyncio.get_event_loop()
-    loop.run_until_complete(_mainloop(loop, handler, pre_hook, input_file))
+    await _mainloop(loop, handler, pre_hook, input_file)
 
 
 async def _mainloop(loop, handler, pre_hook, input_file):
