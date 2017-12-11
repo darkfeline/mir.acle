@@ -3,8 +3,8 @@ mir.acle Release Notes
 
 This project uses `semantic versioning <http://semver.org/>`_.
 
-2.0.0 ()
---------
+2.0.0 (2017-12-10)
+------------------
 
 Changed
 ^^^^^^^
