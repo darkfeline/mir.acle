@@ -22,27 +22,8 @@ import asyncio
 import sys
 
 
-def start_command_line(handler, *, pre_hook=lambda: None,
-                       input_file=None, loop=None):
-    """Start an asynchronous command line.
-
-    This is a convenience version of async_start_command_line.
-    """
-    if loop is None:
-        loop = asyncio.get_event_loop()
-    kwargs = dict(
-        handler=handler,
-        pre_hook=pre_hook,
-        input_file=input_file,
-        loop=loop)
-    if input_file is None:  # pragma: no cover
-        del kwargs['input_file']
-    loop.run_until_complete(async_start_command_line(**kwargs))
-
-
-async def async_start_command_line(handler, *, pre_hook=lambda: None,
-                                   input_file=None, loop=None):
-    """Start an asynchronous command line.
+async def run_command_line(handler, *, pre_hook=lambda: None, input_file=None):
+    """Run an asynchronous command line.
 
     handler is a coroutine function which is called with each command
     line as a string or bytestring read from input_file.  If handler
@@ -53,19 +34,14 @@ async def async_start_command_line(handler, *, pre_hook=lambda: None,
 
     input_file is a file object to read commands from.  If missing, use
     stdin.  input_file should be backed by a socket or pipe.
-
-    loop is the asyncio event loop to use.  If missing, use
-    asyncio.get_event_loop().
     """
     if input_file is None:  # pragma: no cover
         input_file = sys.stdin
-    if loop is None:  # pragma: no cover
-        loop = asyncio.get_event_loop()
-    await _mainloop(loop, handler, pre_hook, input_file)
+    await _mainloop(handler, pre_hook, input_file)
 
 
-async def _mainloop(loop, handler, pre_hook, input_file):
-    reader = await async_reader(loop, input_file)
+async def _mainloop(handler, pre_hook, input_file):
+    reader = await async_reader(input_file)
     while True:
         pre_hook()
         line = await reader.readline()
@@ -75,9 +51,10 @@ async def _mainloop(loop, handler, pre_hook, input_file):
             break
 
 
-async def async_reader(loop, file):
+async def async_reader(file):
     """Create an asyncio StreamReader."""
     reader = asyncio.StreamReader()
     reader_protocol = asyncio.StreamReaderProtocol(reader)
+    loop = asyncio.get_event_loop()
     await loop.connect_read_pipe(lambda: reader_protocol, file)
     return reader

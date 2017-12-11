@@ -28,10 +28,9 @@ def test_BaseHandler_exception(loop, capsys):
     handler = Handler()
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     out, err = capsys.readouterr()
     assert out == 'Uncaught exception in command line handler\n' * 2
@@ -47,10 +46,9 @@ def test_ShellHandler(loop):
     handler.add_command('foo', handle)
 
     with subprocess.Popen('echo foo -d thing', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     assert got == [['foo', '-d', 'thing']]
 
@@ -59,20 +57,18 @@ def test_ShellHandler_default_empty_command(loop):
     handler = handlers.ShellHandler()
     with subprocess.Popen('echo', shell=True, stdout=PIPE) as p:
         # Should not raise
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
 
 def test_ShellHandler_default_unknown_command(loop, capsys):
     handler = handlers.ShellHandler()
 
     with subprocess.Popen('echo foo -d thing', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     out, err = capsys.readouterr()
     assert out == 'Unknown command foo\n'
@@ -88,10 +84,9 @@ def test_ShellHandler_custom_default_handler(loop):
     handler.set_default_handler(handle)
 
     with subprocess.Popen('echo foo -d thing', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     assert got == [['foo', '-d', 'thing']]
 

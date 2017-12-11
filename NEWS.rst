@@ -3,6 +3,14 @@ mir.acle Release Notes
 
 This project uses `semantic versioning <http://semver.org/>`_.
 
+2.0.0 ()
+--------
+
+Changed
+^^^^^^^
+
+- Properly use asyncio loop API (rely on `get_event_loop()`).
+
 1.0.1 (2017-10-29)
 ------------------
 

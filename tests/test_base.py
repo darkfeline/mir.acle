@@ -18,36 +18,20 @@ from subprocess import PIPE
 from mir.acle import base
 
 
-def test_start_command_line(loop):
+def test_run_command_line(loop):
     got = []
 
     async def handler(line):
         got.append(line)
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
-
+            input_file=p.stdout))
     assert got == [b'foo\n', b'bar\n']
 
 
-def test_start_command_line_default_loop():
-    got = []
-
-    async def handler(line):
-        got.append(line)
-
-    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
-            handler=handler,
-            input_file=p.stdout)
-
-    assert got == [b'foo\n', b'bar\n']
-
-
-def test_start_command_line_exiting_early(loop):
+def test_run_command_line_exiting_early(loop):
     got = []
 
     async def handler(line):
@@ -55,15 +39,14 @@ def test_start_command_line_exiting_early(loop):
         return True
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     assert got == [b'foo\n']
 
 
-def test_start_command_line_pre_hook(loop):
+def test_run_command_line_pre_hook(loop):
     got = []
 
     async def handler(line):
@@ -73,23 +56,9 @@ def test_start_command_line_pre_hook(loop):
         got.append(b'pre\n')
 
     with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        base.start_command_line(
+        loop.run_until_complete(base.run_command_line(
             handler=handler,
             pre_hook=hook,
-            input_file=p.stdout,
-            loop=loop)
+            input_file=p.stdout))
 
     assert got == [b'pre\n', b'foo\n', b'pre\n', b'bar\n', b'pre\n']
-
-
-def test_async_start_command_line(loop):
-    got = []
-
-    async def handler(line):
-        got.append(line)
-    with subprocess.Popen('echo foo; echo bar', shell=True, stdout=PIPE) as p:
-        loop.run_until_complete(base.async_start_command_line(
-            handler=handler,
-            input_file=p.stdout,
-            loop=loop))
-    assert got == [b'foo\n', b'bar\n']
